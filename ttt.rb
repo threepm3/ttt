@@ -13,6 +13,10 @@ class Board
     return_string
   end
 
+  def update(x, y, char)
+    @surface[y][x] = char
+  end
+
 end
 
 # 
@@ -25,8 +29,23 @@ class Game
 end
 
 class Player 
-  
+  attr_accessor :name, :mark
+
+  def initialize(name, mark)
+    @name = options[name]
+    @mark = options[mark]
+  end
+
+  def get_user_input()
+    #ask for x coordinate
+    #ask for y coordinate
+    #return [x, y]
+    [0,0]
+  end 
+
+  def make_move()
+    update_board(self, get_user_input())
+  end
+
 end
 
-class Move
-end
