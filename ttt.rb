@@ -21,31 +21,44 @@ end
 
 # 
 class Game
-  def initialize(board, player1, player2)
+  attr_accessor :board, :player1_char, :player2_char
+  def initialize(board, player1_char, player2)
     @game_board = board
-    @player1 = player1
+    @player1_char = player1_char
     @player2 = player2
   end
-end
 
-class Player 
-  attr_accessor :name, :mark
-
-  def initialize(name, mark)
-    @name = options[name]
-    @mark = options[mark]
+  def won?
+    surface.each do |row|
+      if row == ( Array.new(3, player1_char.char) )
+      end
+    end
   end
 
-  def get_user_input()
-    #ask for x coordinate
-    #ask for y coordinate
-    #return [x, y]
-    [0,0]
+end
+
+# Takes care of user interaction
+class GamePlay
+  def start()
   end 
 
-  def make_move()
-    update_board(self, get_user_input())
+  def get_move(player)
+    #returns [x,y]
   end
 
+
 end
+
+puts "Type a character to represent Player 1 ==> "
+player1_char = gets[0] 
+player2_char = nil
+while player2_char == nil do
+  puts "Type a DIFFERENT character to represent Player 2. (Can't be '#{player1_char}') ==>"
+  buffer = gets[0]
+  player2_char = buffer unless (buffer == player1_char) 
+end
+board = Board.new
+puts board
+game = Game.new(board, player1_char, player2_char)
+puts game
 
