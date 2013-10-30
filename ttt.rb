@@ -88,46 +88,31 @@ class Game
     @player2 = player2
   end
 
-  def won?
-    row_won? || column_won? || diagonal_won?
-  end
-
-  def row_winner
-    player1_row = Array.new( 3, player1_char )
-    player2_row = Array.new( 3, player2_char )
-    
-    board.surface.each do |row| 
-      return player1_char if row == player1_row 
-      return player2_char if row == player2_row
-    end
-  end
-
-  # Alrogithm: start with [0][0], [1][0], [2][0]
-  def column_won?
-    (0..2).each
-  end
-
-  def diagonal_won?
+  def to_s
+    @board.to_s
   end
 
 end
 
 # Takes care of user interaction
+# All class methods, b/c we don't want multiple simultaneous games
 class GamePlay
   def self.start()
-    puts "Type a character to represent Player 1."
+    self.setup()
+    while 
+  end 
+
+  def self.setup()
+    puts "Player 1, select a character."
     player1_char = gets[0] 
     player2_char = nil
     while player2_char == nil do
-      puts "Type a DIFFERENT character to represent Player 2."
+      puts "Player 2, select a DIFFERENT character."
       buffer = gets[0]
       player2_char = buffer unless (buffer == player1_char) 
     end
-    board = Board.new
-    puts board
-    game = Game.new(board, player1_char, player2_char)
-    puts game
-  end 
+    @@game = Game.new(player1_char, player2_char)
+  end
 
 end
 
