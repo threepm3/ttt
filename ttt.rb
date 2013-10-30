@@ -59,6 +59,13 @@ class Board
     return_string
   end
 
+  def test_prepare
+    (0..2).each { |y|
+      (0..2).each { |x|
+        update(x, y, x+y)
+      }
+    }
+  end
 end  
 
 # 
