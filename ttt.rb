@@ -84,12 +84,13 @@ end
 
 # Takes care of user interaction
 class GamePlay
-
+  attr_accessor :board, :player1, :player1, :turn_index, :move
   def start()
     setup()
     while @board.winner.nil? do
       puts @board
       get_move(@current_player)
+    end
       
   end
 
@@ -106,18 +107,33 @@ class GamePlay
       end
       @board = Board.new
       @players = [player1, player2]
-      set_random_turn
+      random_turn_index
     end
-
-    def set_random_turn()
+    
+    def random_turn_index()
       @turn_index = [1, -1].sample
     end
 
     def end_turn
-      @turn_index *= -1
+      turn_index *= -1
+      move = nil
     end
 
-    def get_move(player)
-      puts "Move for #{player}"
+    def move()
+      puts "Move for #{players[@turn_index]}..."
+      permitted = ['0', '1', '2']
+
+      while @move_x = nil do
+        puts "Enter x-coordinate BETWEEN 0-2."
+        buffer = gets[0]
+        if permitted.include?(buffer)
+          @move_x = gets[0]
+        end
+      end
+
+
+        puts "Enter y-coordinate between 0-2."
+        @movey = gets[0]
+      end
     end
 end
