@@ -10,21 +10,32 @@ class Board
     surface[y][x] = char
   end
   
-  #not very DRY ... 
-  def row_winner
-    (0..2).each { |i| return row(i)[0] if ( row(i).uniq.length == 1 ) \
-                  and ( not row(i)[0].nil? ) }
-    nil
-  end
-  
-  def column_winner
-    (0..2).each { |i| return column(i)[0] if ( column(i).uniq.length == 1 ) \
-                  and ( not column(i)[0].nil? ) }
+  # returns char representing winner or nil if no winner
+  def winner
+    win_scenarios.each { |array| return array[0] if elements_match?(array) }
     nil
   end
 
-  def winner(array)    
-    array[0] if ( array.uniq.length == 1 and !array.uniq[0].nil? )
+  def elements_match?(array)    
+    array.uniq.length == 1
+  end
+
+  # creates an array of 3-element arrays based on each win condition
+  def win_scenarios()
+    win_scenarios = []
+
+    # add rows and columns 
+    (0..2).each do |i|
+      win_scenarios.push(row(i))
+      win_scenarios.push(column(i))
+    end
+
+    # add diagonals
+    win_scenarios.push(diagonal)
+    win_scenarios.push(reverse_diagonal)
+
+    # return
+    win_scenarios
   end
 
   def column(i)
@@ -59,7 +70,7 @@ class Board
     return_string
   end
 
-  def test_prepare
+  def prepare_test
     (0..2).each { |y|
       (0..2).each { |x|
         update(x, y, x+y)
