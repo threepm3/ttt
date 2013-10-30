@@ -9,7 +9,8 @@ class Board
   def update(x, y, char)
     surface[y][x] = char
   end
-
+  
+  #not very DRY ... 
   def row_winner
     (0..2).each { |i| return row(i)[0] if ( row(i).uniq.length == 1 ) \
                   and ( not row(i)[0].nil? ) }
@@ -22,7 +23,8 @@ class Board
     nil
   end
 
-  def diagonal_winner
+  def winner(array)    
+    array[0] if ( array.uniq.length == 1 and !array.uniq[0].nil? )
   end
 
   def column(i)
@@ -46,8 +48,9 @@ class Board
   def reverse_diagonal()
     reverse_diagonal = []
     (0..2).each do |i|
-      reverse_diagonal.push(surface[i][-i])
+      reverse_diagonal.push(surface[i][-(i+1)])
     end
+    reverse_diagonal
   end
 
   def to_s
