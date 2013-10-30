@@ -1,5 +1,4 @@
 # Representation of a 3 x 3 board
-# Moves: nil for blank, 1 for player1, 2 for player2
 class Board
   attr_accessor :surface
 
@@ -14,10 +13,32 @@ class Board
   end
 
   def update(x, y, char)
-    @surface[y][x] = char
+    surface[y][x] = char
   end
 
-end
+  def row_winner
+    (0..2).each { |i| return row(i)[0] if ( row(i).uniq.length == 1 ) \
+                  and ( not row(i)[0].nil? ) }
+    nil
+  end
+  
+  def column_winner
+    (0..2).each { |i| return column(i)[0] if ( column(i).uniq.length == 1 ) \
+                  and ( not column(i)[0].nil? ) }
+    nil
+  end
+
+  def column(i)
+    column = []
+    surface.each { |row| column.push(row[i]) } 
+    column
+  end
+
+  def row(i)
+    surface[i]
+  end
+
+end  
 
 # 
 class Game
