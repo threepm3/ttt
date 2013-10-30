@@ -6,12 +6,6 @@ class Board
     @surface = Array.new(3) { Array.new(3) }
   end
 
-  def to_s
-    return_string = ""
-    surface.each { |row| return_string += (row.to_s + "\n") }
-    return_string
-  end
-
   def update(x, y, char)
     surface[y][x] = char
   end
@@ -28,6 +22,9 @@ class Board
     nil
   end
 
+  def diagonal_winner
+  end
+
   def column(i)
     column = []
     surface.each { |row| column.push(row[i]) } 
@@ -36,6 +33,27 @@ class Board
 
   def row(i)
     surface[i]
+  end
+
+  def diagonal()
+    diagonal = []
+    (0..2).each do |i|
+      diagonal.push(surface[i][i])
+    end
+    diagonal
+  end
+
+  def reverse_diagonal()
+    reverse_diagonal = []
+    (0..2).each do |i|
+      reverse_diagonal.push(surface[i][-i])
+    end
+  end
+
+  def to_s
+    return_string = ""
+    surface.each { |row| return_string += (row.to_s + "\n") }
+    return_string
   end
 
 end  
