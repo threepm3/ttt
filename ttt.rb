@@ -84,20 +84,26 @@ end
 
 # Takes care of user interaction
 class GamePlay
-  attr_accessor :board, :players, :turn_index, :move
+  attr_accessor :board, :players, :turn, :move
 
   def initialize()
     @board = Board.new
-    @players = get_players()
-    @turn_index = random_turn_index
+    @players = get_players
+    @turn = random_turn
     @move = {}
-=begin
+  end
+
+  def start
+    puts board
     while @board.winner.nil? do
+      puts "1) " + turn.to_s
       get_move
-      board.update(move[:x], move[:y], players[turn_index]
+      board.update(move[:x], move[:y], players[turn])
       puts board
+      reverse_turn
+      puts "2) " + turn.to_s
     end
-=end
+    puts @board.winner + "Wins!"
   end
 
   # private
@@ -114,18 +120,19 @@ class GamePlay
       [player1, player2]
     end
     
-    def random_turn_index
-      [1, -1].sample
+    def random_turn
+      [0, 1].sample
     end
 
-    def reverse_turn_index
-      turn_index *= -1
+    def reverse_turn
+      @turn = (@turn + 1) % 2
     end
 
     def get_move
-      puts "Move for #{players[turn_index]}..."
-      move[:x] = get_coordinate('x')
-      move[:y] = get_coordinate('y') 
+      puts turn
+      puts "Move for #{players[turn]}..."
+      move[:x] = get_coordinate('x').to_i
+      move[:y] = get_coordinate('y').to_i 
     end
 
     def get_coordinate(axis)
