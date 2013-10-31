@@ -84,19 +84,25 @@ end
 
 # Takes care of user interaction
 class GamePlay
-  attr_accessor :board, :player1, :player1, :turn_index, :move
-  def start()
-    setup()
+  attr_accessor :board, :players, :turn_index, :move
+
+  def initialize()
+    @board = Board.new
+    @players = get_players()
+    @turn_index = random_turn_index
+    @move = {}
+=begin
     while @board.winner.nil? do
-      puts @board
-      get_move(@current_player)
+      get_move
+      board.update(move[:x], move[:y], players[turn_index]
+      puts board
     end
-      
+=end
   end
 
-  private
+  # private
 
-    def setup()
+    def get_players
       puts "Player 1, select a character."
       player1 = gets[0] 
       player2 = nil
@@ -105,35 +111,33 @@ class GamePlay
         buffer = gets[0]
         player2 = buffer unless (buffer == player1) 
       end
-      @board = Board.new
-      @players = [player1, player2]
-      random_turn_index
+      [player1, player2]
     end
     
-    def random_turn_index()
-      @turn_index = [1, -1].sample
+    def random_turn_index
+      [1, -1].sample
     end
 
-    def end_turn
+    def reverse_turn_index
       turn_index *= -1
-      move = nil
     end
 
-    def move()
-      puts "Move for #{players[@turn_index]}..."
-      permitted = ['0', '1', '2']
+    def get_move
+      puts "Move for #{players[turn_index]}..."
+      move[:x] = get_coordinate('x')
+      move[:y] = get_coordinate('y') 
+    end
 
-      while @move_x = nil do
-        puts "Enter x-coordinate BETWEEN 0-2."
+    def get_coordinate(axis)
+      permitted = ['0', '1', '2']
+      coordinate = nil
+      while coordinate.nil? do
+        puts "Enter #{axis}-coordinate BETWEEN 0-2."
         buffer = gets[0]
         if permitted.include?(buffer)
-          @move_x = gets[0]
+          coordinate = buffer
         end
       end
-
-
-        puts "Enter y-coordinate between 0-2."
-        @movey = gets[0]
-      end
+      coordinate
     end
 end
