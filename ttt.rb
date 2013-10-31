@@ -7,7 +7,7 @@ class Board
   end
 
   def update(x, y, char)
-    surface[y][x] = char
+    surface[y][x] = char if surface[y][x].nil?
   end
   
   # returns char representing winner or nil if no winner
@@ -96,12 +96,14 @@ class GamePlay
   def start
     puts board
     while @board.winner.nil? do
-      puts "1) " + turn.to_s
       get_move
-      board.update(move[:x], move[:y], players[turn])
+      while board.update(move[:x], move[:y], players[turn]).nil? do
+        puts board
+        puts "That spot is already taken." 
+        get_move
+      end
       puts board
       reverse_turn
-      puts "2) " + turn.to_s
     end
     puts @board.winner + "Wins!"
   end
@@ -129,7 +131,6 @@ class GamePlay
     end
 
     def get_move
-      puts turn
       puts "Move for #{players[turn]}..."
       move[:x] = get_coordinate('x').to_i
       move[:y] = get_coordinate('y').to_i 
