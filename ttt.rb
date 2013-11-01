@@ -5,6 +5,10 @@ class Board
   def initialize()
     @surface = Array.new(3) { Array.new(3) }
   end
+  
+#  def make_meta
+#    @surface = Array.new(3) { Array.new(3) { Board.new() } }
+#  end
 
   def update(x, y, char)
     surface[y][x] = char if surface[y][x].nil?
@@ -14,6 +18,12 @@ class Board
   def winner
     win_scenarios.each { |array| return array[0] if elements_match?(array) }
     nil
+  end
+
+  # returns true if every possible win scenario
+  def draw?
+    win_scenarios.each { |array| return false if !elements_mixed?(array) } 
+    true
   end
 
   def to_s
@@ -29,7 +39,7 @@ class Board
       }
     }
   end
-  
+
   # using surface attr_accessor doesn't work...
   def reset
     @surface = Array.new(3) { Array.new(3) }
@@ -41,6 +51,10 @@ class Board
       array.uniq.length == 1
     end
 
+    def elements_mixed?(array)
+      array.uniq.compact.length > 1
+    end
+    
     # returns an array of 3-element arrays based on each win condition
     def win_scenarios()
       win_scenarios = []
@@ -103,18 +117,19 @@ class GamePlay
 
   def start
     puts board
-    while @board.winner.nil? do
+    while @board.winner.nil? && !@board.draw? do
       get_move
-      while board.update(move[:x], move[:y], players[turn]).nil? do
-        puts board
-        puts "That spot is ALREADY TAKEN!" 
-        pause
-        get_move
-      end
+      fulfill_move
       puts board
       reverse_turn
     end
-    puts @board.winner + " wins! ..."
+    if @board.draw?
+      puts "That's a draw folks."
+      @turn = random_turn
+    else
+      puts @board.winner + " wins! ..."
+      @turn = player_index(@board.winner)
+    end
     pause
     conclude
   end
@@ -122,6 +137,7 @@ class GamePlay
   private
 
     def pause 
+      puts "(Press ENTER.)"
       a_pause = gets
     end
 
@@ -141,7 +157,6 @@ class GamePlay
 
     def conclude
       if play_again? 
-        @turn = player_index(@board.winner)
         @board.reset
         start
       else
@@ -197,6 +212,15 @@ class GamePlay
     def player_index(player)
       players.index(player)
     end
+
+    def fulfill_move
+      while board.update(move[:x], move[:y], players[turn]).nil? do
+        puts board
+        puts "That spot is ALREADY TAKEN!" 
+        pause
+        get_move
+      end
+   end
 
     def get_move
       puts "Move for #{players[turn]}..."
