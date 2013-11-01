@@ -18,7 +18,7 @@ class Board
 
   def to_s
     return_string = ""
-    surface.each { |row| return_string += (row.to_s + "\n") }
+    surface.each { |row| return_string += ("     " + row.to_s + "\n\n") }
     return_string
   end
 
@@ -28,6 +28,11 @@ class Board
         update(x, y, x+y)
       }
     }
+  end
+  
+  # using surface attr_accessor doesn't work...
+  def reset
+    @surface = Array.new(3) { Array.new(3) }
   end
 
   private
@@ -88,9 +93,12 @@ class GamePlay
 
   def initialize()
     @board = Board.new
-    @players = get_players
+    @players = []
     @turn = random_turn
     @move = {}
+    welcome
+    get_players
+    start
   end
 
   def start
@@ -99,28 +107,84 @@ class GamePlay
       get_move
       while board.update(move[:x], move[:y], players[turn]).nil? do
         puts board
-        puts "That spot is already taken." 
+        puts "That spot is ALREADY TAKEN!" 
+        pause
         get_move
       end
       puts board
       reverse_turn
     end
-    puts @board.winner + "Wins!"
+    puts @board.winner + " wins! ..."
+    pause
+    conclude
   end
 
-  # private
+  private
 
-    def get_players
-      puts "Player 1, select a character."
-      player1 = gets[0] 
-      player2 = nil
-      while player2 == nil do
-        puts "Player 2, select a DIFFERENT character."
-        buffer = gets[0]
-        player2 = buffer unless (buffer == player1) 
-      end
-      [player1, player2]
+    def pause 
+      a_pause = gets
     end
+
+    def welcome 
+      newline
+      puts "Welcome to ..."
+      newline
+      puts "        TTTTTTT   TTTTTTT    TTTTTTT     "
+      puts "        TTTTTTT   TTTTTTT    TTTTTTT     "
+      puts "          TTT       TTT        TTT       "
+      puts "          TTT       TTT        TTT       "
+      puts "          TTT  ic   TTT  ac    TTT oe    "
+      newline
+      puts "                       by Michael Prouty "
+      newline
+    end
+
+    def conclude
+      if play_again? 
+        @turn = player_index(@board.winner)
+        @board.reset
+        start
+      else
+        puts "Goodbye!"
+      end
+    end
+      
+    def play_again?
+      answer = nil
+      permitted = ['y', 'n']
+      while answer == nil do
+        puts "Play again? [y/n]"
+        buffer = gets[0]
+        answer = buffer if permitted.include?(buffer)
+      end
+      return false if answer == 'n'
+      return true if answer == 'y'
+    end
+      
+    def get_players
+      message =  "Player 1, select a character.  (e.g. '&', 'P', '2')"
+      prohibited = ["\n"]
+      player1 = get_player(message, prohibited) 
+
+      message = "Player 2, select a DIFFERENT character."
+      prohibited.push(player1)
+      player2 = get_player(message, prohibited)
+      @players = [player1, player2]
+      puts "Pleased to meet you.  Let's play!"
+      pause
+    end
+
+    def get_player(message, prohibited)
+      player = nil
+      while player == nil do
+        puts message
+        buffer = gets[0]
+        player = buffer unless prohibited.include?(buffer)
+        newline
+      end
+      player
+    end
+
     
     def random_turn
       [0, 1].sample
@@ -130,8 +194,13 @@ class GamePlay
       @turn = (@turn + 1) % 2
     end
 
+    def player_index(player)
+      players.index(player)
+    end
+
     def get_move
       puts "Move for #{players[turn]}..."
+      newline
       move[:x] = get_coordinate('x').to_i
       move[:y] = get_coordinate('y').to_i 
     end
@@ -142,10 +211,17 @@ class GamePlay
       while coordinate.nil? do
         puts "Enter #{axis}-coordinate BETWEEN 0-2."
         buffer = gets[0]
+        newline
         if permitted.include?(buffer)
           coordinate = buffer
         end
       end
       coordinate
     end
+
+    def newline
+      puts "\n"
+    end
 end
+
+game = GamePlay.new
